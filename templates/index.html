@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radiology Report Summarizer</title>
+</head>
+<body>
+    <h1>Radiology Report Summarizer</h1>
+    <form method="POST" action="/process">
+        <label for="case_text">Paste your radiology reports here:</label><br>
+        <textarea id="case_text" name="case_text" rows="20" cols="80">{{ case_text }}</textarea><br>
+        <button type="submit">Get Summaries</button>
+    </form>
+    <h2>Summaries</h2>
+    <textarea rows="20" cols="80">{{ summary }}</textarea>
+</body>
+</html>
