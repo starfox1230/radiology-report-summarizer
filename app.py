@@ -20,7 +20,8 @@ def get_summary(case_text):
             max_tokens=1000,
             temperature=0.7
         )
-        return response['choices'][0]['message']['content'].strip()
+        # Correct way to access the response content
+        return response.choices[0].message['content'].strip()
     except Exception as e:
         return f"Error processing case: {str(e)}"
 
