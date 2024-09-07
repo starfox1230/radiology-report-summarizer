@@ -10,15 +10,18 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 # Function to send text to GPT-4o-mini and get a summary for a single pair of reports
 def get_summary(case_text):
     try:
-        # Call the GPT-4o-mini model
-        response = openai.Completion.create(
-            model="gpt-4o-mini",  # Specify the GPT-4o-mini model
-            prompt=f"Succinctly organize the changes made by the attending to the resident's radiology reports into: 1) missed major findings, 2) missed minor findings, and 3) clarified descriptions of findings. The reports are: {case_text}",
+        # Use the new ChatCompletion.create method instead of Completion.create
+        response = openai.ChatCompletion.create(
+            model="gpt-4o-mini",  # Replace with gpt-4o-mini or another model
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant that summarizes radiology reports."},
+                {"role": "user", "content": f"Succinctly organize the changes made by the attending to the resident's radiology reports into: 1) missed major findings, 2) missed minor findings, and 3) clarified descriptions of findings. The reports are: {case_text}"}
+            ],
             max_tokens=1000,
-            temperature=0  # Adjust for more deterministic output
+            temperature=0  # Adjust if needed
         )
-        # Return the model's response
-        return response.choices[0].text.strip()
+        # Return the text of the response
+        return response['choices'][0]['message']['content'].strip()
     except Exception as e:
         return f"Error processing case: {str(e)}"
 
