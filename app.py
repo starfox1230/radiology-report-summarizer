@@ -1,37 +1,41 @@
-import openai
+from openai import OpenAI
 from flask import Flask, render_template, request
 import os
 
 app = Flask(__name__)
 
-# Set your OpenAI API key here or from environment variables
-openai.api_key = os.getenv("OPENAI_API_KEY")
+# Initialize the OpenAI client
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 # Function to send text to GPT-4o-mini and get a summary
 def get_summary(case_text):
     try:
-        response = openai.completions.create(
-            model="gpt-4o-mini",  # Using the latest syntax for completions
-            prompt=f"Summarize the following case: {case_text}",
+        # Use the client object and chat completion call
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant that organizes changes made by attendings to residents' radiology reports."},
+                {"role": "user", "content": f"Summarize the changes made by the attending to the resident's reports. {case_text}"}
+            ],
             max_tokens=1000,
-            temperature=0.5
+            temperature=0.7
         )
-        return response.choices[0].text.strip()
+        return response['choices'][0]['message']['content'].strip()
     except Exception as e:
         return f"Error processing case: {str(e)}"
 
-# Function to process multiple cases from the bulk input
+# Function to process multiple cases from bulk input
 def process_cases(bulk_text):
     summaries = []
-    # Split the bulk input into individual cases based on "Case"
+    # Split the input into individual cases by the word "Case"
     cases = bulk_text.split("Case")
-    for case in cases:
+    for index, case in enumerate(cases[1:], start=1):  # Skipping the empty string from the split
         if "Attending Report" in case and "Resident Report" in case:
             attending_report = case.split("Attending Report:")[1].split("Resident Report:")[0].strip()
             resident_report = case.split("Resident Report:")[1].strip()
-            case_text = f"Attending Report: {attending_report}\n\nResident Report: {resident_report}"
+            case_text = f"Attending Report: {attending_report}\nResident Report: {resident_report}"
             summary = get_summary(case_text)
-            summaries.append(f"Case {cases.index(case)}:\n{summary}\n")
+            summaries.append(f"Case {index}:\n{summary}\n")
     return summaries
 
 @app.route('/')
