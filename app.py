@@ -15,7 +15,7 @@ def get_summary(case_text):
             model="gpt-4o-mini",
             messages=[
                 {"role": "system", "content": "You are a helpful assistant that organizes changes made by attendings to residents' radiology reports."},
-                {"role": "user", "content": f"Summarize the changes made by the attending to the resident's reports. {case_text}"}
+                {"role": "user", "content": f"Succinctly organize the changes made by the attending to the resident's radiology reports into: 1) missed major findings (life threatening or treatment altering), 2) missed minor findings, and 3) clarified descriptions of findings. Keep your answers brief and to the point. The reports are: {case_text}"}
             ],
             max_tokens=1000,
             temperature=0.7
