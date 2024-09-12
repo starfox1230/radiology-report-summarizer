@@ -12,7 +12,7 @@ def get_summary(case_text):
     try:
         # Use the client object and chat completion call
         response = client.chat.completions.create(
-            model="gpt-4o-2024-08-06",
+            model="gpt-4o-mini",
             messages=[
                 {"role": "system", "content": "You are a helpful assistant that organizes changes made by attendings to residents' radiology reports."},
                 {"role": "user", "content": f"Succinctly organize the changes made by the attending to the resident's radiology reports into: 1) missed major findings (life threatening or treatment altering), 2) missed minor findings, and 3) clarified descriptions of findings. Assume the attending's version was correct, and anything not included by the attending but was included by the resident should have been left out by the resident. Keep your answers brief and to the point. The reports are: {case_text}"}
