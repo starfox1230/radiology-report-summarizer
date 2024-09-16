@@ -8,14 +8,14 @@ app = Flask(__name__)
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 # Function to send text to GPT-4o-mini and get a summary
-def get_summary(case_text):
+def get_summary(case_text, custom_prompt):
     try:
         # Use the client object and chat completion call
         response = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[
                 {"role": "system", "content": "You are a helpful assistant that organizes changes made by attendings to residents' radiology reports."},
-                {"role": "user", "content": f"Succinctly organize the changes made by the attending to the resident's radiology reports into: 1) missed major findings (life threatening or treatment altering), 2) missed minor findings, and 3) clarified descriptions of findings. Assume the attending's version was correct, and anything not included by the attending but was included by the resident should have been left out by the resident. Keep your answers brief and to the point. The reports are: {case_text}"}
+                {"role": "user", "content": f"{custom_prompt}\n{case_text}"}
             ],
             max_tokens=1000,
             temperature=0.7
@@ -26,7 +26,7 @@ def get_summary(case_text):
         return f"Error processing case: {str(e)}"
 
 # Function to process multiple cases from bulk input
-def process_cases(bulk_text):
+def process_cases(bulk_text, custom_prompt):
     summaries = []
     # Split the input into individual cases by the word "Case"
     cases = bulk_text.split("Case")
@@ -35,7 +35,7 @@ def process_cases(bulk_text):
             attending_report = case.split("Attending Report:")[1].split("Resident Report:")[0].strip()
             resident_report = case.split("Resident Report:")[1].strip()
             case_text = f"Attending Report: {attending_report}\nResident Report: {resident_report}"
-            summary = get_summary(case_text)
+            summary = get_summary(case_text, custom_prompt)
             summaries.append(f"Case {index}:\n{summary}\n")
     return summaries
 
@@ -46,7 +46,8 @@ def index():
 @app.route('/process', methods=['POST'])
 def process():
     bulk_text = request.form['case_text']
-    summaries = process_cases(bulk_text)
+    custom_prompt = request.form['custom_prompt']
+    summaries = process_cases(bulk_text, custom_prompt)
     summary_output = "\n".join(summaries)
     return render_template('index.html', case_text=bulk_text, summary=summary_output)
 
