@@ -44,7 +44,7 @@
             border-radius: 5px;
             border: 1px solid #ddd;
             font-size: 16px;
-            min-height: 200px;
+            min-height: 100px;
             box-sizing: border-box;
         }
 
@@ -88,7 +88,13 @@
     <div class="container">
         <h1>Radiology Report Summarizer</h1>
 
+        <!-- Add a new field for customizing the OpenAI API prompt -->
         <form method="POST" action="/process">
+            <label for="custom_prompt">Customize your OpenAI API prompt:</label>
+            <textarea id="custom_prompt" name="custom_prompt">
+Succinctly organize the changes made by the attending to the resident's radiology reports into: 1) missed major findings (life threatening or treatment altering), 2) missed minor findings, and 3) clarified descriptions of findings. Assume the attending's version was correct, and anything not included by the attending but was included by the resident should have been left out by the resident. Keep your answers brief and to the point. The reports are:
+            </textarea>
+
             <label for="case_text">Paste your radiology reports here:</label>
             <textarea id="case_text" name="case_text">{{ case_text }}</textarea>
             <button type="submit">Get Summaries</button>
