@@ -17,7 +17,7 @@ def get_summary(case_text, custom_prompt):
                 {"role": "system", "content": "You are a helpful assistant that organizes changes made by attendings to residents' radiology reports."},
                 {"role": "user", "content": f"{custom_prompt}\n{case_text}"}
             ],
-            max_tokens=1000,
+            max_tokens=2000,
             temperature=0.5
         )
         # Correct way to access the message content
