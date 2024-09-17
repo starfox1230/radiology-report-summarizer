@@ -18,7 +18,7 @@ def get_summary(case_text, custom_prompt):
                 {"role": "user", "content": f"{custom_prompt}\n{case_text}"}
             ],
             max_tokens=1000,
-            temperature=0.7
+            temperature=0.3
         )
         # Correct way to access the message content
         return response.choices[0].message.content.strip()
