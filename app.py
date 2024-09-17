@@ -34,7 +34,7 @@ def process_cases(bulk_text, custom_prompt):
         if "Attending Report" in case and "Resident Report" in case:
             attending_report = case.split("Attending Report:")[1].split("Resident Report:")[0].strip()
             resident_report = case.split("Resident Report:")[1].strip()
-            case_text = f"Attending Report: {attending_report}\nResident Report: {resident_report}"
+            case_text = f"Resident Report: {resident_report}\nAttending Report: {attending_report}"
             summary = get_summary(case_text, custom_prompt)
             summaries.append(f"Case {index}:\n{summary}\n")
     return summaries
